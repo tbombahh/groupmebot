@@ -20,6 +20,7 @@ function respond()
 	help = /^\/help$/;
 	meball = /^\/8/;
 	yn = /^\/yn/;
+	member = /^\/name/;
 	flip = /^\/flip$/;
 	about = /^\/about$/;
 
@@ -85,7 +86,7 @@ function respond()
 	if(searchres && request.name != botName && !(webres))
 	{
 		var query = str.substr(8);
-		if(googleID != undefined)
+		if(googleID != 'AIzaSyCKDiariOtWalhK4Qet46cIYi-StbMODWM')
 			search(query);
 	}
 
@@ -125,88 +126,20 @@ function respond()
 	  //Help Text Section
 	  else if(request.text && help.test(request.text)) {
 		this.res.writeHead(200);
-		var botResponse = "Here's what I can do: \n \n" + 
-		    "1. I'm a Meme Finder.  Type '/g' before your search term and I'll return a related .gif from the internet! \n \n" +
-		    "2. I'm a Yes/No-er.  Type '/yn' before your search term and I'll return a Yes or No to your question! \n \n" +
-		    "3. I'm a Coin Flipper.  Type '/flip' to flip a coin! \n \n" +
-		    "4. I'm a Magic 8 Ball.  Type '/8' to get your fortune! \n \n" +
-		    "Let Me know if there is anything else you want me to do :)"
-		postMessage(botResponse);
+		helpMe();
 		this.res.end();
 	} 
 	  //About Me Text Section
 	  else if(request.text && about.test(request.text)) {
 		this.res.writeHead(200);
-		var botResponse = "I've been created by TBomb with the help of the GitHub community.  I am version 3.0 and the last time I was updated was on 5/24/18.  My new features are coin flip, 8ball, and yes/no."
-		postMessage(botResponse);
+		aboutMe();
 		this.res.end();
 	} 
 	  //Magic 8 Ball Code
 	  else if(request.text && meball.test(request.text)) {
-		this.res.writeHead(200);
-		var r = Math.floor((Math.random() * 100) + 1);
-		var magic = "You can ask all you want.  It doesn't mean I'll answer";
-						
-		if (r < 100 && r > 95) {
-			magic = "It is certain";
-		} else if (r < 96 && r > 91){
-			magic = "I have no clue and I would say ask the 9 ball, but 7 8 9";
-		} else if (r < 92 && r > 87){
-			magic = "Ask again later";
-		} else if (r < 88 && r > 83){
-			magic = "Don't count on it";
-		} else if (r < 84 && r > 79){
-			magic = "The stars say no";
-		} else if (r < 80 && r > 75){
-			magic = "You can count on it";
-		} else if (r < 76 && r > 71){
-			magic = "I'd rather not say...";
-		} else if (r < 72 && r > 67){
-			magic = "Doubtful";
-		} else if (r < 68 && r > 63){
-			magic = "Try asking in a different way";
-		} else if (r < 64 && r > 59){
-			magic = "That's a dumb question";
-		} else if (r < 60 && r > 55){
-			magic = "If you have to ask, you'll never know";
-		} else if (r < 56 && r > 51){
-			magic = "Outlook not so good";
-		}  else if (r < 52 && r > 47){
-			magic = "Chances are slim";
-		} else if (r < 48 && r > 43){
-			magic = "Most likely";
-		} else if (r < 44 && r > 39){
-			magic = "Definitely";
-		} else if (r < 40 && r > 35){
-			magic = "Not going to say 'yes' but it's looking like it";
-		} else if (r < 36 && r > 31){
-			magic = "Not going to say 'no' but it's looking like it";
-		} else if (r < 32 && r > 27){
-			magic = "Probably";
-		} else if (r < 28 && r > 23){
-			magic = "Probably not";
-		} else if (r < 24 && r > 19){
-			magic = "Concentrate harder and ask again";
-		} else if (r < 20 && r > 15){
-			magic = "Hehe yeah... YEAH BABY! yeah";
-		} else if (r < 16 && r > 11){
-			magic = "That adds no substance to the conversation";
-		} else if (r < 12 && r > 7){
-			magic = "Out fighting fires, ask me later";
-		} else if (r < 8 && r > 4){
-			magic = "Ima answer all your questions given time its tough \n" +
-				"to be a GroupMe bot and be online and stuff \n" +
-				"you get to make money , sleep, and you light the 'puff' \n" +
-				"but I'm basically a servant, yeah my life is rough \n" +
-				"so read between the lines and yeah.. I don't know where I'm going with this.  I don't have an answer for you...";
-		} else if (r < 5 && r > 3){
-			magic = "4";
-		} else if (r < 4 && r > 0){
-			magic = "This group was better when I was real";
-		} 
-		var botResponse = magic;
-		postMessage(botResponse);
-		this.res.end();
+		  this.res.writeHead(200);
+		  eightBall();
+		  this.res.end();
 					
 	} 
 	  //Yes or No Answer Section
@@ -222,16 +155,17 @@ function respond()
 		this.res.end();	
 	
 	}  
+	//Random Name Section
+	  else if(request.text && member.test(request.text)) {
+		  this.res.writeHead(200);
+		  pickName();
+		  this.res.end();
+	
+	}  
 	  //Coin Flip Section
 	  else if(request.text && flip.test(request.text)) {
 		this.res.writeHead(200);
-		var r = Math.random();
-		var theflip = 'Heads';
-		if (r < 0.5) {
-			theflip = 'Tails';
-		}
-		var botResponse = theflip ;
-		postMessage(botResponse);
+		coinFlipper();
 		this.res.end();	
 	
 	} else {
@@ -274,18 +208,6 @@ function apiai(query)
 		console.log('Error: ' +e);
 	});
 }
-
-//**************************************************************************
-/*Flips coin
-function flipcoin() {
-  var r = Math.random();
-  var botResponse = 'heads';
-  if (r < 0.5) {
-    botResponse = 'tails';
-    postMessage(botResponse);  
-}
-*/
-//*************************************************************************
 
 //Sends to Giphy to get Gif
 function getGif(query)
@@ -330,6 +252,244 @@ function search(query)
 	});
 }
 
+//Help Function Code 
+function helpMe()
+{
+	var botResponse = "Here's what I can do: \n \n" + 
+	"1. I'm a Meme Finder.  Type '/g' before your search term and I'll return a related .gif from the internet! \n \n" +
+	"2. I'm a Yes/No-er.  Type '/yn' before your search term and I'll return a Yes or No to your question! \n \n" +
+	"3. I'm a Coin Flipper.  Type '/flip' to flip a coin! \n \n" +
+	"4. I'm a Magic 8 Ball.  Type '/8' to get your fortune! \n \n" +
+	"Let Me know if there is anything else you want me to do :)"
+	postMessage(botResponse);
+}
+
+//About Me  Function Code
+function aboutMe()
+{
+	var botResponse = "I've been created by TBomb with the help of the GitHub community.  " +
+			"I am version 3.0.1 and the last time I was updated was on 5/25/18.  " +
+	    		"Release details are: cleaned up code."
+	postMessage(botResponse);
+}
+
+
+
+//*****************************************************************
+//Pick a Random Name
+function pickName()
+{
+	var r = Math.floor((Math.random() * 100) + 1);
+	var magic = "4";				
+	if (r < 100 && r > 94) {
+		magic = "Joe";
+	} else if (r < 95 && r > 89){
+		magic = "Bryant";
+	} else if (r < 90 && r > 84){
+		magic = "Justin";
+	} else if (r < 85 && r > 79){
+		magic = "Kryger";
+	} else if (r < 80 && r > 74){
+		magic = "Dylan";
+	} else if (r < 75 && r > 69){
+		magic = "Ryan";
+	} else if (r < 70 && r > 64){
+		magic = "Connor";
+	} else if (r < 65 && r > 59){
+		magic = "Jimmy";
+	} else if (r < 60 && r > 54){
+		magic = "Gruber";
+	} else if (r < 55 && r > 49){
+		magic = "Richie";
+	} else if (r < 50 && r > 44){
+		magic = "Maloney";
+	} else if (r < 45 && r > 39){
+		magic = "Taylor";
+	} else if (r < 40 && r > 34){
+		magic = "Jason";
+	} else if (r < 35 && r > 29){
+		magic = "Nick";
+	} else if (r < 30 && r > 24){
+		magic = "Me";
+	} else if (r < 25 && r > 19){
+		magic = "Romano";
+	} else if (r < 20 && r > 14){
+		magic = "Corby";
+	} else if (r < 15 && r > 9){
+		magic = "Vinny";
+	} else if (r < 10 && r > 4){
+		magic = "No one";
+	} else if (r < 5 && r > 0){
+		magic = "Everyone";
+	} 
+	
+	//This is rolling for a 2nd name in case it gets used in a response
+	var r2 = Math.floor((Math.random() * 100) + 1);
+	var magic2 = "anyone else";				
+	if (r2 < 100 && r2 > 94) {
+		magic2 = "Joe";
+	} else if (r2 < 95 && r2 > 89){
+		magic2 = "Bryant";
+	} else if (r2 < 90 && r2 > 84){
+		magic2 = "Justin";
+	} else if (r2 < 85 && r2 > 79){
+		magic2 = "Kryger";
+	} else if (r2 < 80 && r2 > 74){
+		magic2 = "Dylan";
+	} else if (r2 < 75 && r2 > 69){
+		magic2 = "Ryan";
+	} else if (r2 < 70 && r2 > 64){
+		magic2 = "Connor";
+	} else if (r2 < 65 && r2 > 59){
+		magic2 = "Jimmy";
+	} else if (r2 < 60 && r2 > 54){
+		magic2 = "Gruber";
+	} else if (r2 < 55 && r2 > 49){
+		magic2 = "Richie";
+	} else if (r2 < 50 && r2 > 44){
+		magic2 = "Maloney";
+	} else if (r2 < 45 && r2 > 39){
+		magic2 = "Taylor";
+	}  else if (r2 < 40 && r2 > 34){
+		magic2 = "Me!";
+	} else if (r2 < 35 && r2 > 29){
+		magic2 = "Nick";
+	} else if (r2 < 30 && r2 > 24){
+		magic2 = "Jason";
+	} else if (r2 < 25 && r2 > 19){
+		magic2 = "Romano";
+	} else if (r2 < 20 && r2 > 14){
+		magic2 = "Corby";
+	} else if (r2 < 15 && r2 > 9){
+		magic2 = "Vinny";
+	} 
+	// Splitting responses so the ending isnt always the same for each person.
+	var rr = Math.floor((Math.random() * 100) + 1);
+	var ending = " ";
+	if (rr < 100 && rr > 94) {
+		ending = " ";
+	} else if (rr < 95 && rr > 89){
+		ending = " ";
+	} else if (rr < 90 && rr > 84){
+		ending = "is what my crystal BALLS say!";
+	} else if (rr < 85 && rr > 79){
+		ending = "fo sho";
+	} else if (rr < 80 && rr > 74){
+		ending = " ...duh! ";
+	} else if (rr < 75 && rr > 69){
+		ending = "of course";
+	} else if (rr < 70 && rr > 64){
+		ending = " ";
+	} else if (rr < 65 && rr > 59){
+		ending = "all the way!";
+	} else if (rr < 60 && rr > 54){
+		ending = " ";
+	} else if (rr < 55 && rr > 44){
+		ending = "or " + magic2;
+	} else if (rr < 45 && rr > 39){
+		ending = magic + "! " + magic + "!";
+	} else if (rr < 40 && rr > 34){
+		ending = " ";
+	}  else if (rr < 35 && rr > 29){
+		ending = " ";
+	} else if (rr < 30 && rr > 24){
+		ending = " .... regrettably ";
+	} else if (rr < 25 && rr > 19){
+		ending = " ";
+	} else if (rr < 20 && rr > 14){
+		ending = "without a doubt";
+	} else if (rr < 15 && rr > 9){
+		ending = " but definitely not " +magic2;
+	} else if (rr < 10 && rr > 4){
+		ending = " ";
+	} 
+	
+	var botResponse = magic + " " + ending;
+	postMessage(botResponse);
+}
+
+
+//Play with Magic 8Ball
+function eightBall()
+{
+	var r = Math.floor((Math.random() * 100) + 1);
+	var magic = "You can ask all you want.  It doesn't mean I'll answer.  Try again though ;)";
+					
+	if (r < 100 && r > 92) {
+		magic = "It is certain";
+	} else if (r < 93 && r > 9){
+		magic = "I have no clue and I would say ask the 9 ball, but 7 8 9";
+	} else if (r < 92 && r > 87){
+		magic = "Ask again later";
+	} else if (r < 88 && r > 83){
+		magic = "Don't count on it";
+	} else if (r < 84 && r > 79){
+		magic = "The stars say no";
+	} else if (r < 80 && r > 75){
+		magic = "You can count on it";
+	} else if (r < 76 && r > 71){
+		magic = "I'd rather not say...";
+	} else if (r < 72 && r > 67){
+		magic = "Doubtful";
+	} else if (r < 68 && r > 63){
+		magic = "Try asking in a different way";
+	} else if (r < 64 && r > 59){
+		magic = "That's a dumb question";
+	} else if (r < 60 && r > 55){
+		magic = "If you have to ask, you'll never know";
+	} else if (r < 56 && r > 51){
+		magic = "Outlook not so good";
+	}  else if (r < 52 && r > 47){
+		magic = "Chances are slim";
+	} else if (r < 48 && r > 43){
+		magic = "Most likely";
+	} else if (r < 44 && r > 39){
+		magic = "Definitely";
+	} else if (r < 40 && r > 35){
+		magic = "Not going to say 'yes' but it's looking like it";
+	} else if (r < 36 && r > 31){
+		magic = "Not going to say 'no' but it's looking like it";
+	} else if (r < 32 && r > 27){
+		magic = "Probably";
+	} else if (r < 28 && r > 23){
+		magic = "Probably not";
+	} else if (r < 24 && r > 19){
+		magic = "Concentrate harder and ask again";
+	} else if (r < 20 && r > 15){
+		magic = "Hehe yeah... YEAH BABY! yeah";
+	} else if (r < 16 && r > 11){
+		magic = "Can you try asking again?";
+	} else if (r < 12 && r > 7){
+		magic = "Out fighting fires, ask me later";
+	} else if (r < 8 && r > 5){
+		magic = "Ima answer all your questions given time its tough \n" +
+			"to be a GroupMe bot and be online and stuff \n" +
+			"you get to make money , sleep, and you light the 'puff' \n" +
+			"but I'm basically a servant, yeah my life is rough \n" +
+			"so read between the lines and yeah.. I don't know where I'm going with this.  I don't have an answer for you...";
+	} else if (r < 6 && r > 2){
+		magic = "4";
+	} else if (r < 3 && r > 0){
+		magic = "This group was better when I was real";
+	} 
+	var botResponse = magic;
+	postMessage(botResponse);
+}
+
+//Play with Coin Flipper
+function coinFlipper()
+{
+	var r = Math.random();
+		var theflip = 'Heads';
+		if (r < 0.5) {
+			theflip = 'Tails';
+		}
+		var botResponse = theflip ;
+		postMessage(botResponse);
+}
+
+
+
 //Post to Groupme
 function postMessage(botResponse)
 {
@@ -359,5 +519,6 @@ function postMessage(botResponse)
 	});
 	botReq.end(JSON.stringify(body));
 }
+
 
 exports.respond = respond;
