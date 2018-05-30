@@ -268,8 +268,8 @@ function helpMe()
 function aboutMe()
 {
 	var botResponse = "I've been created by TBomb with the help of the GitHub community.  " +
-			"I am version 3.0.1 and the last time I was updated was on 5/25/18.  " +
-	    		"Release details are: cleaned up code."
+			"I am version 3.1.0 and the last time I was updated was on 5/30/18.  " +
+	    		"Release details are: added function that will choose a name at random for you"
 	postMessage(botResponse);
 }
 
